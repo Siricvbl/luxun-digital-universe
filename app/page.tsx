@@ -1,15 +1,22 @@
 'use client';
 import React, { useState, useEffect, useRef } from 'react';
-import { Send, BookOpen, Zap, X, ChevronDown, ChevronRight, History, Quote } from 'lucide-react';
+import { Send, BookOpen, Zap, X, ChevronDown, ChevronRight, History, Quote, Globe } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 export default function Home() {
+  const router = useRouter();
   const [input, setInput] = useState('');
-  const [messages, setMessages] = useState([{ role: 'lx', content: '你好，我是鲁迅。全集已整理完毕，你想聊哪一篇？' }]);
+  const [messages, setMessages] = useState([{ role: 'lx', content: '来了便坐。我这里没什么客套，你想问什么，直说就是。' }]);
   const [loading, setLoading] = useState(false);
   const [library, setLibrary] = useState<Record<string, any[]>>({});
   const [expandedCat, setExpandedCat] = useState<string | null>(null);
   const [activeArticle, setActiveArticle] = useState<any>(null);
   const [isReading, setIsReading] = useState(false);
+
+  // 作品 → 图谱 slug 映射（有图谱的作品才能"进入XXX的世界"）
+  const worldSlugs: Record<string, string> = {
+    '狂人日记': 'kr',
+  };
 
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -78,9 +85,9 @@ const bioPhotoUrl = "/portrait.jpeg";
           <div className="flex flex-col lg:flex-row gap-12 items-start mb-16">
             <div className="flex-1">
               <h1 className="text-6xl font-bold mb-6 tracking-tighter">鲁迅 <span className="text-xl text-stone-400 font-normal ml-4">1881 — 1936</span></h1>
-              <div className="space-y-4 text-stone-600 leading-relaxed text-lg italic">
+              <div className="space-y-4 text-stone-600 leading-relaxed text-xl italic">
                 <p>“此后如竟没有火炬，我便是唯一的光。”</p>
-                <p className="not-italic text-base text-stone-500">中国现代文学的奠基人，思想家。他以笔为武器，在黑暗的铁屋子中呐喊，唤醒了一个时代。他的文字跨越百年，依然字字如刀，划破国民的麻木。</p>
+                <p className="not-italic text-lg text-stone-500">中国现代文学的奠基人，思想家。他以笔为武器，在黑暗的铁屋子中呐喊，唤醒了一个时代。他的文字跨越百年，依然字字如刀，划破国民的麻木。</p>
               </div>
             </div>
             <div className="w-48 h-64 rounded-2xl overflow-hidden border border-stone-200 shadow-xl grayscale hover:grayscale-0 transition-all duration-700">
@@ -100,14 +107,43 @@ const bioPhotoUrl = "/portrait.jpeg";
                   { year: '1936', event: '在上海逝世' }
                 ].map((item, idx) => (
                   <div key={idx} className="relative">
-                    <div className="text-xs text-red-900 font-bold mb-2">{item.year}</div>
-                    <div className="text-sm text-stone-800 font-serif whitespace-nowrap">{item.event}</div>
+                    <div className="text-base text-red-900 font-bold mb-2">{item.year}</div>
+                    <div className="text-lg text-stone-800 font-serif whitespace-nowrap">{item.event}</div>
                     <div className="absolute -left-4 top-0 bottom-0 w-[1px] bg-stone-200"></div>
                   </div>
                 ))}
              </div>
           </div>
         </header>
+
+        {/* 2.5 进入「狂人日记的世界」醒目按钮 */}
+        <div className="mb-16 group">
+          <button
+            onClick={() => router.push('/novel/kr')}
+            className="w-full relative overflow-hidden rounded-2xl border-2 border-stone-800 bg-stone-900 p-8 flex items-center justify-between transition-all duration-300 hover:bg-stone-800 hover:shadow-xl hover:shadow-stone-900/20 cursor-pointer"
+          >
+            {/* 装饰底纹 */}
+            <div className="absolute inset-0 opacity-[0.03] bg-[radial-gradient(circle_at_30%_50%,#fff_0%,transparent_60%)]"></div>
+            
+            <div className="flex items-center gap-6 relative z-10">
+              <div className="w-16 h-16 rounded-xl bg-red-950/40 flex items-center justify-center border border-red-800/20 group-hover:scale-110 transition-transform duration-300">
+                <Globe size={28} className="text-red-300" />
+              </div>
+              <div className="text-left">
+                <div className="text-stone-100 font-serif text-2xl font-bold tracking-tight">进入狂人日记的世界</div>
+                <div className="text-stone-400 text-sm font-serif mt-1">探索《狂人日记》人物关系图谱 · 力导向交互可视化</div>
+              </div>
+            </div>
+            
+            <div className="relative z-10 flex items-center gap-2 text-stone-400 text-sm group-hover:text-stone-200 transition-colors">
+              <span className="hidden sm:inline">探索人物世界</span>
+              <ChevronRight size={20} className="group-hover:translate-x-1 transition-transform" />
+            </div>
+
+            {/* 底部装饰线 */}
+            <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-red-900/0 via-red-700/60 to-red-900/0 group-hover:via-red-500/80 transition-all duration-500"></div>
+          </button>
+        </div>
 
         {/* 3. 藏书阁列表 */}
         <section className="space-y-6">
@@ -123,9 +159,9 @@ const bioPhotoUrl = "/portrait.jpeg";
                   onClick={() => setExpandedCat(expandedCat === catName ? null : catName)}
                   className="w-full py-6 flex justify-between items-center group"
                 >
-                  <span className="font-serif text-xl font-bold group-hover:text-red-900 transition-colors">《{catName}》</span>
+                  <span className="font-serif text-2xl font-bold group-hover:text-red-900 transition-colors">《{catName}》</span>
                   <div className="flex items-center gap-4 text-stone-400">
-                    <span className="text-xs uppercase tracking-widest">{articles.length} WORKS</span>
+                    <span className="text-sm uppercase tracking-widest">{articles.length} WORKS</span>
                     {expandedCat === catName ? <ChevronDown size={18}/> : <ChevronRight size={18}/>}
                   </div>
                 </button>
@@ -136,13 +172,28 @@ const bioPhotoUrl = "/portrait.jpeg";
                       <div 
                         key={idx}
                         onClick={() => handleArticleClick(art, catName)}
-                        className={`p-4 text-sm font-serif cursor-pointer border-l-2 transition-all
+                        className={`p-4 text-lg font-serif cursor-pointer border-l-2 transition-all flex flex-col justify-between
                           ${activeArticle?.title === art.title ? 'bg-white border-red-900 shadow-sm' : 'border-transparent hover:border-stone-300 text-stone-600'}`}
                       >
-                        <div className="font-bold mb-2">{art.title}</div>
+                        <div>
+                          <div className="font-bold mb-2">{art.title}</div>
+                          <div className="flex gap-2 flex-wrap">
+                            {worldSlugs[art.title] && (
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  router.push(`/novel/${worldSlugs[art.title]}`);
+                                }}
+                                className="text-[9px] uppercase tracking-tighter px-2 py-0.5 rounded-full border border-stone-300 text-stone-500 hover:bg-stone-800 hover:text-white hover:border-stone-800 transition-all flex items-center gap-1"
+                              >
+                                <Globe size={10} /> 进入{art.title.replace(/《|》/g,'')}的世界
+                              </button>
+                            )}
+                          </div>
+                        </div>
                         <button 
                           onClick={(e) => { e.stopPropagation(); setActiveArticle(art); setIsReading(true); }}
-                          className="text-[9px] uppercase tracking-tighter opacity-40 hover:opacity-100"
+                          className="self-start text-[9px] uppercase tracking-tighter opacity-40 hover:opacity-100 mt-2"
                         >
                           OPEN TEXT →
                         </button>
@@ -173,7 +224,7 @@ const bioPhotoUrl = "/portrait.jpeg";
         <div ref={scrollRef} className="flex-1 overflow-y-auto p-8 space-y-8 custom-scrollbar">
           {messages.map((msg, i) => (
             <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-              <div className={`max-w-[90%] p-5 rounded-2xl text-sm leading-[1.8] shadow-sm ${
+              <div className={`max-w-[90%] p-5 rounded-2xl text-lg leading-[1.8] shadow-sm ${
                 msg.role === 'user' ? 'bg-stone-800 text-white rounded-tr-none' : 'bg-white border border-stone-100 rounded-tl-none font-serif'
               }`}>
                 {msg.content}
