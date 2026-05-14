@@ -1,36 +1,110 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 鲁迅数字宇宙 · Luxun Digital Universe
 
-## Getting Started
+> "此后如竟没有火炬，我便是唯一的光。"
 
-First, run the development server:
+鲁迅先生（1881-1936）作品的数字化探索项目。将鲁迅的文学世界转化为可交互的数字体验——目前完成了《狂人日记》人物关系图谱和数字鲁迅对话功能。
+
+---
+
+## 功能
+
+### 🕸️ 人物关系图谱
+
+基于 **D3.js** 的力导向关系图谱，展示《狂人日记》的人物关系和事件网络。
+
+- **力导向布局**：拖拽交互、缩放、人物浮移动画
+- **关系过滤**：悬停高亮关联人物和关系线
+- **人物详情**：点击节点查看性格、形象、语录、关联角色
+- **对话入口**：与鲁迅先生聊聊《狂人日记》
+
+关系类型 | 颜色
+---|---
+亲属 | `#8B5CF6` 亮紫
+街坊 | `#60A5FA` 亮蓝
+医患 | `#34D399` 翠绿
+主雇 | `#FB923C` 亮橙
+路人 | `#D1D5DB` 浅灰
+同乡 | `#EAB308` 亮黄
+
+### 🤖 数字鲁迅对话
+
+以鲁迅口吻回答问题的 AI 对话系统，基于 DeepSeek API。
+
+- 克制冷峻、温和但尖锐的鲁迅文风
+- 对当代事物（手机、电脑、互联网）保持时代陌生感
+- 不自称 AI，不强行鸡汤，不卖惨
+- 点破问题的同时给人出路
+
+### 📚 鲁迅全集藏书阁
+
+按分类浏览鲁迅全部作品，点击即可阅读全文，或与先生讨论。
+
+---
+
+## 技术栈
+
+- **框架**：Next.js 16 (App Router, Turbopack)
+- **可视化**：D3.js v7 (力导向图)
+- **AI**：DeepSeek Chat API
+- **样式**：Tailwind CSS + 内联样式
+- **字体**：PingFang SC / Songti SC
+- **图标**：Lucide React
+
+---
+
+## 本地运行
 
 ```bash
+# 安装依赖
+npm install
+
+# 配置环境变量
+cp .env.example .env.local
+# 在 .env.local 中填入 DEEPSEEK_API_KEY
+
+# 启动开发服务器
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+访问 `http://localhost:3000`
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 项目结构
 
-## Learn More
+```
+app/
+├── api/chat/route.ts        # 数字鲁迅对话 API
+├── novel/[slug]/page.tsx    # 小说世界图谱页面
+├── layout.tsx               # 全局布局
+└── page.tsx                 # 首页（藏书阁 + 对话）
 
-To learn more about Next.js, take a look at the following resources:
+public/
+├── kr-graph-v7.json         # 狂人日记图谱数据
+├── avatar.jpeg              # 鲁迅头像
+└── portrait.jpeg            # 鲁迅肖像
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+docs/
+├── ontology-design.md       # 本体论设计
+└── relationship-ontology.md # 关系本体
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+scripts/                     # 数据构建脚本
+```
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 路线图
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- [x] 狂人日记人物关系图谱
+- [x] 数字鲁迅对话
+- [x] 首页跳转与交互打通
+- [ ] 更多小说图谱（阿Q正传、药、祝福……）
+- [ ] 跨作品人物关系网络
+- [ ] 鲁迅年表交互可视化
+- [ ] 移动端适配
+
+---
+
+## 许可
+
+MIT
