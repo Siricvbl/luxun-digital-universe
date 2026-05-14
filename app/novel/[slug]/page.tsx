@@ -150,7 +150,7 @@ const ForceGraph: React.FC<{
     const nodes = graphData.characters.map(d => ({ ...d }));
     const links = graphData.links.map(d => ({ ...d }));
 
-    const simulation = d3.forceSimulation(nodes)
+    const simulation = d3.forceSimulation(nodes as any)
       .force('link', d3.forceLink(links).id((d: any) => d.id).distance(180))
       .force('charge', d3.forceManyBody().strength(-350))
       .force('center', d3.forceCenter(width / 2, height / 2))
@@ -169,10 +169,10 @@ const ForceGraph: React.FC<{
       .data(nodes)
       .join('g')
       .style('cursor', 'pointer')
-      .call(d3.drag<SVGGElement, any>()
-        .on('start', (e, d) => { if (!e.active) simulation.alphaTarget(0.3).restart(); d.fx = d.x; d.fy = d.y; })
-        .on('drag', (e, d) => { d.fx = e.x; d.fy = e.y; })
-        .on('end', (e, d) => { if (!e.active) simulation.alphaTarget(0); d.fx = null; d.fy = null; })
+      .call((d3.drag() as any)
+        .on('start', (e: any, d: any) => { if (!e.active) simulation.alphaTarget(0.3).restart(); d.fx = d.x; d.fy = d.y; })
+        .on('drag', (e: any, d: any) => { d.fx = e.x; d.fy = e.y; })
+        .on('end', (e: any, d: any) => { if (!e.active) simulation.alphaTarget(0); d.fx = null; d.fy = null; })
       );
 
     function highlightNode(id: string) {
